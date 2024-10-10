@@ -4,4 +4,4 @@ mul t0, t0, t2
 lw t3, 16(x12)
 sub x10, t0, t3 
 
-sw x10, 12(x13) // B[3] = x
+sw x10, 12(x13)
