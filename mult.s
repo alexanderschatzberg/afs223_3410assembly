@@ -13,5 +13,3 @@ skip_add:
     addi t1, t1, 1
     li t2, 64
     bne t1, t2, loop
-
-    ret
