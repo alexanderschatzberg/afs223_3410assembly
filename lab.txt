@@ -1,0 +1,128 @@
+1, Binomial Expansion: 
+LHS:
+// Math: z = pow((x+y), 4); 
+// x1 holds x, x2 holds y, x3 holds z
+
+add x4, x1, x2
+mul x5, x4, x4
+mul x3, x5, x5
+
+RHS: 
+Math: z = 1 * 1 * pow(y, 4) + 4 * x * pow(y, 3) + 6 * pow(x, 2) * pow(y, 2) + 4 * pow(x, 3) * y + 1 * pow(x, 4) * 1
+6 * pow(x, 2) * pow(y, 2) + 4 * pow(x, 3) * y + 1 * pow(x, 4) * 1
+x1 holds x, x2 holds y, x3 holds z
+
+mul t0, x2, x2       // t0 = y^2
+mul t1, t0, x2       // t1 = y^3
+mul t2, t1, x2       // t2 = y^4
+
+mul x7, x1, x1       // x7 = x^2
+mul x8, x7, x1       // x8 = x^3
+mul x9, x8, x1       // x9 = x^4
+
+// Take each step and add it to x3
+// pow(y, 4)
+mul t3, t2, 1        
+add x3, x3, t3
+
+// 4 * x * pow(y, 3)
+mul t3, t1, x1       
+addi t6, x0, 4
+mul t3, t3, t6
+add x3, x3, t3
+
+// 6 * pow(x, 2) * pow(y, 2)
+addi t6, x0, 6
+mul t3, t0, x7
+addi t6, x0, 6
+mul t3, t3, t6
+add x3, x3, t3
+
+// 4 * pow(x, 3) * y
+addi t6, x0, 4
+mul t3, x8, x2
+mul t3, t3, t6
+add x3, x3, t3
+
+// pow(x, 4)
+add x3, x3, x9
+
+
+2, Swap: Swap the varaibles at a[1] and a[3]
+// a is a pointer to the array, lives in x1 
+LW x2, 4(x1)
+LW x3, 12(x1)
+SW x2, 12(x1)
+SW x3, 4(x1)
+
+
+3, Conditional Control Flow:
+
+// Compare x and y
+blt x16, x17, less_than   // if x < y, jump to less_than
+
+// Else part: y--
+addi x17, x17, -1         // y = y - 1
+j end_if                  // Jump to the end of the if statement
+
+less_than:
+    // Then part: y = (x - y) * 2
+    sub t0, x16, x17          // t0 = x - y
+    slli x17, t0, 1           // y = t0 << 1 (equivalent to y = t0 * 2)
+
+end_if:
+    // Continue with the rest of the program
+
+
+4, Loops: 
+1: incorrect
+    blt t0, a0, end: Branch to end if t0 < a0.
+    This means the loop exits when i < y, which is incorrect.
+2: incorrect 
+    beq t0, a0, end: Branch to end if t0 == a0.
+    Loop continues when i != y.
+3: Correct 
+4: Incorrect 
+    There isn't a loop back to the start of the loop 
+5: Incorrect
+    This is a do-while loop, meanining that
+    the loop will alway execute at least once 
+
+
+5, Putting Everything Together 
+addi x4, 0x, 0
+
+LOOP: 
+    beq x2, x4, END
+    lw x5, 0(x1)
+    mul x3, x3, x5
+    addi x1, x1, 4
+    addi x4, x4, 1
+END: 
+
+6, Branches 
+t0 = 0
+t1 = 5
+if (t1 < x0) jump to label 
+t0 += 5
+label 
+t0 = t0 + 6
+
+t0 will be equal to 11 after this program executes 
+If blt were replaced by bge, 
+
+7, Accessing Memory
+s3 would contain the value stored at memory address 12,
+   which is 7 in this case
+The constants in the lines 2 and 3 are the offsets that 
+    are added to the base address to access the memory location
+    of the variable.
+
+8, Loop to C 
+int x = 7; 
+int y = 0; 
+while (x > 0){
+    x -= 1; 
+    y += x; 
+}
+
