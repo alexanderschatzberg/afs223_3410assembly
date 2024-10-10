@@ -13,5 +13,5 @@ LOOP:
     beqz t3, .ret_fls
 
     addi t4, t4, 1
-    j loop_start 
+    j LOOP: 
 
